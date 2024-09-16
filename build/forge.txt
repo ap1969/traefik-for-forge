@@ -1,0 +1,17 @@
+cd /home/forge/traefik
+
+git pull origin $FORGE_SITE_BRANCH
+
+cp docker-compose.prod.yml docker-compose.yml
+
+# Pull the latest Docker images
+docker-compose -f docker-compose.yml pull
+
+# Recreate the containers
+docker-compose -f docker-compose.yml up -d --remove-orphans
+
+# Prune old images to free up space (optional)
+docker image prune -f
+
+
+docker-compose up -d --remove-orphans

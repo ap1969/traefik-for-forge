@@ -63,3 +63,31 @@ services:
       - traefik.http.routers.html-to-tailwind.rule=Host(`tw.embedbuilder.com`)
       - traefik.http.routers.html-to-tailwind.tls.certresolver=leresolver
       - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000
+
+
+  uppy-companion:
+    container_name: uppy-companion
+    image: transloadit/companion
+    restart: always
+    networks:
+      - web
+    ports:
+      - "${COMPANION_PORT:-3020}:3020"
+    environment:
+      - COMPANION_DATADIR=/mnt/companion-data
+      - COMPANION_DOMAIN=comp.embedbuilder.com
+      - COMPANION_PROTOCOL=https
+      - COMPANION_CLIENT_ORIGINS=["https://onlineadmin.dev", "https://embedbuilder.com"]
+      - COMPANION_SECRET=${COMPANION_SECRET}
+      - COMPANION_DROPBOX_KEY=${COMPANION_DROPBOX_KEY}
+      - COMPANION_DROPBOX_SECRET=${COMPANION_DROPBOX_SECRET}
+      - COMPANION_GOOGLE_KEY=${COMPANION_GOOGLE_KEY}
+      - COMPANION_GOOGLE_SECRET=${COMPANION_GOOGLE_SECRET}
+    volumes:
+      - ${COMPANION_DATA_DIR:-./companion-data}:/mnt/companion-data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.html-to-tailwind.entrypoints=https
+      - traefik.http.routers.html-to-tailwind.rule=Host(`comp.embedbuilder.com`)
+      - traefik.http.routers.html-to-tailwind.tls.certresolver=leresolver
+      - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3020

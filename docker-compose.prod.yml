@@ -123,6 +123,8 @@ services:
     image: ghcr.io/plausible/community-edition:v2.1.4
     restart: always
     command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
+    env_file:
+      - .env
     depends_on:
       plausible_db:
         condition: service_healthy

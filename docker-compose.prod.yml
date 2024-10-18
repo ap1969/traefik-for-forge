@@ -180,24 +180,6 @@ services:
       - traefik.http.routers.plausible.tls.certresolver=leresolver
       - traefik.http.services.plausible.loadbalancer.server.port=8000
 
-  plausible:
-    image: plausible/analytics:latest
-    restart: always
-    depends_on:
-      - plausible_db
-      - plausible_events_db
-    networks:
-      - web
-    environment:
-      - SECRET_KEY_BASE=${PLAUSIBLE_SECRET_KEY_BASE}
-      - DISABLE_REGISTRATION=${PLAUSIBLE_DISABLE_REGISTRATION:-false}
-      - DISABLE_AUTH=${PLAUSIBLE_DISABLE_AUTH:-false}
-      - DATABASE_URL=postgres://postgres:${PLAUSIBLE_DB_PASSWORD}@plausible_db:5432/plausible
-      - CLICKHOUSE_DATABASE_URL=http://plausible_events_db:8123/plausible
-    volumes:
-      - plausible-config:/app/config
-
-
 
 volumes:
   plausible-db-data:

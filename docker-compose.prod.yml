@@ -103,7 +103,12 @@ services:
       - traefik.http.routers.embedbuilder-websocket.tls=true
       - traefik.http.routers.embedbuilder-websocket.tls.certresolver=leresolver
       - traefik.http.services.embedbuilder-websocket.loadbalancer.server.port=3000
-      # Add these for websocket support
+      # CORS and SSL headers
+      - traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS
+      - traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=https://embedbuilder.com,https://www.embedbuilder.com,https://onlineadmin.dev
+      - traefik.http.middlewares.cors.headers.accesscontrolallowcredentials=true
+      - traefik.http.middlewares.cors.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.cors.headers.addvaryheader=true
       - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
-      - traefik.http.routers.embedbuilder-websocket.middlewares=sslheader
+      - traefik.http.routers.embedbuilder-websocket.middlewares=cors,sslheader
 

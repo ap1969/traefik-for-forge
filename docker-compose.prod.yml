@@ -90,25 +90,4 @@ services:
       - traefik.http.routers.uppy-companion.tls.certresolver=leresolver
       - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
 
-  embedbuilder-websocket:
-    container_name: embedbuilder-websocket
-    image: ghcr.io/ap1969/embedbuilder-websocket-server:latest
-    restart: always
-    networks:
-      - web
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.embedbuilder-websocket.entrypoints=websecure
-      - traefik.http.routers.embedbuilder-websocket.rule=Host(`ws.embedbuilder.com`)
-      - traefik.http.routers.embedbuilder-websocket.tls=true
-      - traefik.http.routers.embedbuilder-websocket.tls.certresolver=leresolver
-      - traefik.http.services.embedbuilder-websocket.loadbalancer.server.port=3000
-      # CORS and SSL headers
-      - traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS
-      - traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=https://embedbuilder.com,https://www.embedbuilder.com,https://onlineadmin.dev
-      - traefik.http.middlewares.cors.headers.accesscontrolallowcredentials=true
-      - traefik.http.middlewares.cors.headers.accesscontrolmaxage=100
-      - traefik.http.middlewares.cors.headers.addvaryheader=true
-      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
-      - traefik.http.routers.embedbuilder-websocket.middlewares=cors,sslheader
 

@@ -98,8 +98,12 @@ services:
       - web
     labels:
       - traefik.enable=true
-      - traefik.http.routers.embedbuilder-websocket.entrypoints=https
+      - traefik.http.routers.embedbuilder-websocket.entrypoints=websecure
       - traefik.http.routers.embedbuilder-websocket.rule=Host(`ws.embedbuilder.com`)
+      - traefik.http.routers.embedbuilder-websocket.tls=true
       - traefik.http.routers.embedbuilder-websocket.tls.certresolver=leresolver
       - traefik.http.services.embedbuilder-websocket.loadbalancer.server.port=3000
+      # Add these for websocket support
+      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
+      - traefik.http.routers.embedbuilder-websocket.middlewares=sslheader
 

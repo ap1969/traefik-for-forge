@@ -4,20 +4,50 @@ networks:
 
 services:
   traefik:
-    image: traefik:v2.10
-    container_name: traefik
+    image: traefik:v2.3
     restart: always
-    security_opt:
-      - no-new-privileges:true
     networks:
       - web
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
+      # Uncomment for debug
+      #- "8080:8080"
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./data/traefik.yml:/traefik.yml:ro
+      - ./letsencrypt:/letsencrypt
+      - ./traefik.auth:/auth/traefik.auth
+    command:
+      - --api.dashboard=true
+      # Uncomment for debug
+      #- --api.insecure=true
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=http
+      - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.leresolver.acme.email=${LETS_ENCRYPT_EMAIL}
+    labels:
+      ## TRAEFIK ROUTER & DASHBOARD
+      - traefik.enable=true
+      - traefik.http.routers.traefik.entrypoints=https
+      - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DASHBOARD_HOST}`)
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=auth
+      - traefik.http.routers.traefik.tls.certresolver=leresolver
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+
+      ## Global redirect to HTTPS
+      - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
+      - traefik.http.routers.http-catchall.entrypoints=http
+      - traefik.http.routers.http-catchall.middlewares=redirect-to-https
+
+      ## Middlewares
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+
+      ## AUTH
+      - traefik.http.middlewares.auth.basicauth.usersfile=/auth/traefik.auth
 
   html-to-tailwind:
     container_name: html-to-tailwind
@@ -27,18 +57,13 @@ services:
       - web
     environment:
       - AUTH_TOKEN=${HTML_TO_TAILWIND_AUTH_TOKEN}
-      - NODE_ENV=production
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.html-to-tailwind.entrypoints=http"
-      - "traefik.http.routers.html-to-tailwind.rule=Host(`tw.embedbuilder.com`)"
-      - "traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000"
-      # CORS configuration
-      - "traefik.http.middlewares.html-to-tailwind-cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS"
-      - "traefik.http.middlewares.html-to-tailwind-cors.headers.accesscontrolalloworiginlist=*"
-      - "traefik.http.middlewares.html-to-tailwind-cors.headers.accesscontrolmaxage=100"
-      - "traefik.http.middlewares.html-to-tailwind-cors.headers.addvaryheader=true"
-      - "traefik.http.routers.html-to-tailwind.middlewares=html-to-tailwind-cors"
+      - traefik.enable=true
+      - traefik.http.routers.html-to-tailwind.entrypoints=https
+      - traefik.http.routers.html-to-tailwind.rule=Host(`tw.embedbuilder.com`)
+      - traefik.http.routers.html-to-tailwind.tls.certresolver=leresolver
+      - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000
+
 
   uppy-companion:
     container_name: uppy-companion
@@ -64,5 +89,3 @@ services:
       - traefik.http.routers.uppy-companion.rule=Host(`comp.embedbuilder.com`)
       - traefik.http.routers.uppy-companion.tls.certresolver=leresolver
       - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
-
-

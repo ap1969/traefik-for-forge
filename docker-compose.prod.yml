@@ -67,7 +67,7 @@ services:
 
   screenshot-service:
     container_name: screenshot-service
-    image: ghcr.io/ap1969/screenshot-service:1.0.4
+    image: ghcr.io/ap1969/screenshot-service:1.0.5
     restart: always
     networks:
       - web

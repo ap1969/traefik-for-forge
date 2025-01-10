@@ -32,7 +32,7 @@ services:
       ## TRAEFIK ROUTER & DASHBOARD
       - traefik.enable=true
       - traefik.http.routers.traefik.entrypoints=https
-      - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DASHBOARD_HOST}`)
+      - traefik.http.routers.traefik.rule=Host(`rp.embedbuilder.com`)
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.middlewares=auth
       - traefik.http.routers.traefik.tls.certresolver=leresolver
@@ -64,6 +64,20 @@ services:
       - traefik.http.routers.html-to-tailwind.tls.certresolver=leresolver
       - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000
 
+  screenshot-service:
+    container_name: screenshot-service
+    image: ghcr.io/ap1969/screenshot-service:1.0.0
+    restart: always
+    networks:
+      - web
+    ports:
+      - "3001:3001"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.screenshot-service.entrypoints=https
+      - traefik.http.routers.screenshot-service.rule=Host(`ss.embedbuilder.com`)
+      - traefik.http.routers.screenshot-service.tls.certresolver=leresolver
+      - traefik.http.services.screenshot-service.loadbalancer.server.port=3001
 
   uppy-companion:
     container_name: uppy-companion
@@ -90,17 +104,4 @@ services:
       - traefik.http.routers.uppy-companion.tls.certresolver=leresolver
       - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
 
-  screenshot-service:
-    container_name: screenshot-service
-    image: ghcr.io/ap1969/screenshot-service:1.0.0
-    restart: always
-    networks:
-      - web
-    ports:
-      - "3001:3001"
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.screenshot-service.entrypoints=https
-      - traefik.http.routers.screenshot-service.rule=Host(`ss.embedbuilder.com`)
-      - traefik.http.routers.screenshot-service.tls.certresolver=leresolver
-      - traefik.http.services.screenshot-service.loadbalancer.server.port=3001
+  

@@ -89,3 +89,18 @@ services:
       - traefik.http.routers.uppy-companion.rule=Host(`comp.embedbuilder.com`)
       - traefik.http.routers.uppy-companion.tls.certresolver=leresolver
       - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
+
+  screenshot-service:
+    container_name: screenshot-service
+    image: ghcr.io/ap1969/screenshot-service:latest
+    restart: always
+    networks:
+      - web
+    ports:
+      - "3001:3001"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.screenshot-service.entrypoints=https
+      - traefik.http.routers.screenshot-service.rule=Host(`ss.embedbuilder.com`)
+      - traefik.http.routers.screenshot-service.tls.certresolver=leresolver
+      - traefik.http.services.screenshot-service.loadbalancer.server.port=3001

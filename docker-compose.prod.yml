@@ -51,7 +51,7 @@ services:
 
   html-to-tailwind:
     container_name: html-to-tailwind
-    image: ghcr.io/ap1969/html-to-tailwind-api:1.0.0
+    image: ghcr.io/ap1969/html-to-tailwind-api:latest
     restart: always
     networks:
       - web
@@ -92,7 +92,7 @@ services:
 
   screenshot-service:
     container_name: screenshot-service
-    image: ghcr.io/ap1969/screenshot-service:latest
+    image: ghcr.io/ap1969/screenshot-service:1.0.0
     restart: always
     networks:
       - web

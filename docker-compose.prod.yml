@@ -70,8 +70,6 @@ services:
     restart: always
     networks:
       - web
-    ports:
-      - "3001:3001"
     labels:
       - traefik.enable=true
       - traefik.http.routers.screenshot-service.entrypoints=https

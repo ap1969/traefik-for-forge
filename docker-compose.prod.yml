@@ -48,8 +48,9 @@ services:
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 
       ## AUTH
-      - traefik.http.middlewares.auth.basicauth.usersfile=/auth/traefik.auth
-
+      - traefik.http
+      
+      
   html-to-tailwind:
     container_name: html-to-tailwind
     image: ghcr.io/ap1969/html-to-tailwind-api:latest
@@ -64,20 +65,6 @@ services:
       - traefik.http.routers.html-to-tailwind.rule=Host(`tw.embedbuilder.com`)
       - traefik.http.routers.html-to-tailwind.tls.certresolver=leresolver
       - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000
-
-  screenshot-service:
-    container_name: screenshot-service
-    image: ghcr.io/ap1969/screenshot-service:1.0.7
-    restart: always
-    networks:
-      - web
-    labels:
-      - traefik.enable=true
-      - "traefik.docker.network=web"
-      - traefik.http.routers.screenshot-service.entrypoints=https
-      - traefik.http.routers.screenshot-service.rule=Host(`ss.embedbuilder.com`)
-      - traefik.http.routers.screenshot-service.tls.certresolver=leresolver
-      - traefik.http.services.screenshot-service.loadbalancer.server.port=3001
 
   uppy-companion:
     container_name: uppy-companion

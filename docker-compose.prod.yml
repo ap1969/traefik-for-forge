@@ -11,26 +11,23 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      # Uncomment for debug
-      #- "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./letsencrypt:/letsencrypt
+      - ./certs:/certs
       - ./traefik.auth:/auth/traefik.auth
     command:
       - --api.dashboard=true
       - --log.level=DEBUG
-      # Uncomment for debug
-      #- --api.insecure=true
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      - --certificatesresolvers.leresolver.acme.httpchallenge=true
-      - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=http
-      - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.leresolver.acme.email=${LETS_ENCRYPT_EMAIL}
-      - --log.level=DEBUG
+      # Configure default certificate
+      - --entrypoints.https.tls=true
+      - --entrypoints.https.tls.certresolver=cloudflare
+      # Define Cloudflare cert configuration
+      - --tls.certificates.certFile=/certs/embedbuilder/cert.pem
+      - --tls.certificates.keyFile=/certs/embedbuilder/key.pem
     labels:
       ## TRAEFIK ROUTER & DASHBOARD
       - traefik.enable=true
@@ -38,14 +35,13 @@ services:
       - traefik.http.routers.traefik.rule=Host(`rp.embedbuilder.com`)
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.middlewares=auth
-      - traefik.http.routers.traefik.tls.certresolver=leresolver
+      - traefik.http.routers.traefik.tls=true
       - traefik.http.services.traefik.loadbalancer.server.port=8080
 
-      ## Global redirect to HTTPS - modify to check for valid certs
+      ## Global redirect to HTTPS
       - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.http-catchall.entrypoints=http
       - traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker
-      # Add priority to ensure cert challenges work
       - traefik.http.routers.http-catchall.priority=1
 
       ## Middlewares
@@ -66,7 +62,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.html-to-tailwind.entrypoints=https
       - traefik.http.routers.html-to-tailwind.rule=Host(`tw.embedbuilder.com`)
-      - traefik.http.routers.html-to-tailwind.tls.certresolver=leresolver
+      - traefik.http.routers.html-to-tailwind.tls=true
       - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000
 
   uppy-companion:
@@ -91,7 +87,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.uppy-companion.entrypoints=https
       - traefik.http.routers.uppy-companion.rule=Host(`comp.embedbuilder.com`)
-      - traefik.http.routers.uppy-companion.tls.certresolver=leresolver
+      - traefik.http.routers.uppy-companion.tls=true
       - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
 
   icon-api:
@@ -105,6 +101,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.icon-api.entrypoints=https
-      - traefik.http.routers.icon-api.rule=Host(`icon-api.embedbuilder.com`)
-      - traefik.http.routers.icon-api.tls.certresolver=leresolver
+      - traefik.http.routers.icon-api.rule=Host(`icon.embedbuilder.com`)
+      - traefik.http.routers.icon-api.tls=true
       - traefik.http.services.icon-api.loadbalancer.server.port=3000

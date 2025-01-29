@@ -23,34 +23,29 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      # Static TLS configuration
-      - --entrypoints.https.tls.options=default
-      - --entrypoints.https.tls.certresolver=default
-      - --entrypoints.https.tls.domains[0].main=embedbuilder.com
-      - --entrypoints.https.tls.domains[0].sans=*.embedbuilder.com
-      # File provider for certificates
+      # Simplified TLS configuration
+      - --entrypoints.https.tls=true
       - --providers.file.directory=/certs
       - --providers.file.watch=true
     labels:
       - traefik.enable=true
       # Dashboard configuration
-      - traefik.http.routers.traefik.entrypoints=https
-      - traefik.http.routers.traefik.rule=Host(`rp.embedbuilder.com`)
-      - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.tls=true
-      - traefik.http.services.traefik.loadbalancer.server.port=8080
+      - traefik.http.routers.dashboard.entrypoints=https
+      - traefik.http.routers.dashboard.rule=Host(`rp.embedbuilder.com`)
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.tls=true
 
-      # Auth middleware configuration
-      - traefik.http.middlewares.auth.basicauth.usersfile=/auth/traefik.auth
-      - traefik.http.routers.traefik.middlewares=auth@docker
+      # Auth middleware
+      - traefik.http.middlewares.auth-middleware.basicauth.usersfile=/auth/traefik.auth
+      - traefik.http.routers.dashboard.middlewares=auth-middleware@docker
 
       # Global redirect to HTTPS
       - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.http-catchall.entrypoints=http
-      - traefik.http.routers.http-catchall.middlewares=redirect-to-https
+      - traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker
       - traefik.http.routers.http-catchall.priority=1
 
-      # Middlewares
+      # Redirect middleware
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 
   # Rest of your services remain unchanged

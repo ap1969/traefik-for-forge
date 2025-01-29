@@ -13,15 +13,16 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./certs:/certs
+      - ./certs:/certs:ro
       - ./traefik.auth:/auth/traefik.auth
     command:
-      - --api.dashboard=true
       - --log.level=DEBUG
+      - --api.dashboard=true
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
+      - --entrypoints.https.tls=true
       - --entrypoints.https.tls.certificates.certfile=/certs/cert.pem
       - --entrypoints.https.tls.certificates.keyfile=/certs/key.pem
       - --providers.file.directory=/certs

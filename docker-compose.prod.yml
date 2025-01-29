@@ -99,6 +99,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.icon-api.entrypoints=https
-      - traefik.http.routers.icon-api.rule=Host(`icon.embedbuilder.com`)
+      - traefik.http.routers.icon-api.rule=Host(`icon-api.embedbuilder.com`)
       - traefik.http.routers.icon-api.tls=true
       - traefik.http.services.icon-api.loadbalancer.server.port=3000

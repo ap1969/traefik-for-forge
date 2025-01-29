@@ -22,12 +22,9 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      # Configure default certificate
       - --entrypoints.https.tls=true
-      - --entrypoints.https.tls.certresolver=cloudflare
-      # Define Cloudflare cert configuration
-      - --tls.certificates.certFile=/certs/embedbuilder/cert.pem
-      - --tls.certificates.keyFile=/certs/embedbuilder/key.pem
+      - --providers.file.directory=/certs
+      - --providers.file.watch=true
     labels:
       ## TRAEFIK ROUTER & DASHBOARD
       - traefik.enable=true

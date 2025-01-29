@@ -23,8 +23,7 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      # Simplified TLS configuration
-      - --entrypoints.https.tls=true
+      # File provider for certificates
       - --providers.file.directory=/certs
       - --providers.file.watch=true
     labels:

@@ -22,7 +22,8 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      - --entrypoints.https.tls=true
+      - --entrypoints.https.tls.certificates.certfile=/certs/cert.pem
+      - --entrypoints.https.tls.certificates.keyfile=/certs/key.pem
       - --providers.file.directory=/certs
       - --providers.file.watch=true
     labels:

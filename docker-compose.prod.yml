@@ -26,9 +26,11 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
+      - --certificatesresolvers.leresolver.acme.httpchallenge=true
       - --certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=http
       - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.leresolver.acme.email=${LETS_ENCRYPT_EMAIL}
+      - --log.level=DEBUG
     labels:
       ## TRAEFIK ROUTER & DASHBOARD
       - traefik.enable=true
@@ -39,10 +41,12 @@ services:
       - traefik.http.routers.traefik.tls.certresolver=leresolver
       - traefik.http.services.traefik.loadbalancer.server.port=8080
 
-      ## Global redirect to HTTPS
+      ## Global redirect to HTTPS - modify to check for valid certs
       - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.http-catchall.entrypoints=http
-      - traefik.http.routers.http-catchall.middlewares=redirect-to-https
+      - traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker
+      # Add priority to ensure cert challenges work
+      - traefik.http.routers.http-catchall.priority=1
 
       ## Middlewares
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https

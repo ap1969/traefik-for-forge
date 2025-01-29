@@ -14,7 +14,7 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./certs:/certs:ro
+      - /certs:/certs:ro
       - ./traefik.auth:/auth/traefik.auth
     command:
       - --log.level=DEBUG
@@ -23,7 +23,12 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      # TLS configuration
+      # Static TLS configuration
+      - --entrypoints.https.tls.options=default
+      - --entrypoints.https.tls.certresolver=default
+      - --entrypoints.https.tls.domains[0].main=embedbuilder.com
+      - --entrypoints.https.tls.domains[0].sans=*.embedbuilder.com
+      # File provider for certificates
       - --providers.file.directory=/certs
       - --providers.file.watch=true
     labels:

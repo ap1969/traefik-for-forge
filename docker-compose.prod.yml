@@ -23,17 +23,21 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      # Updated TLS configuration for v3
+      # TLS configuration
       - --providers.file.directory=/certs
       - --providers.file.watch=true
     labels:
       - traefik.enable=true
+      # Dashboard configuration
       - traefik.http.routers.traefik.entrypoints=https
       - traefik.http.routers.traefik.rule=Host(`rp.embedbuilder.com`)
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.middlewares=auth
       - traefik.http.routers.traefik.tls=true
       - traefik.http.services.traefik.loadbalancer.server.port=8080
+
+      # Auth middleware configuration
+      - traefik.http.middlewares.auth.basicauth.usersfile=/auth/traefik.auth
+      - traefik.http.routers.traefik.middlewares=auth@docker
 
       # Global redirect to HTTPS
       - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)

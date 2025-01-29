@@ -4,7 +4,7 @@ networks:
 
 services:
   traefik:
-    image: traefik:v2.3
+    image: traefik:v3.3.2
     container_name: traefik
     restart: always
     networks:
@@ -14,7 +14,7 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./certs:/certs:ro # Will contain Cloudflare certificates
+      - ./certs:/certs:ro
       - ./traefik.auth:/auth/traefik.auth
     command:
       - --log.level=DEBUG
@@ -23,11 +23,7 @@ services:
       - --entrypoints.https.address=:443
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      # Updated TLS configuration for v2.3
-      - --certificatesresolvers.cloudflare.certificate.certfile=/certs/cert.pem
-      - --certificatesresolvers.cloudflare.certificate.keyfile=/certs/key.pem
-      - --entrypoints.https.tls.domains[0].main=embedbuilder.com
-      - --entrypoints.https.tls.domains[0].sans=*.embedbuilder.com
+      # Updated TLS configuration for v3
       - --providers.file.directory=/certs
       - --providers.file.watch=true
     labels:
@@ -42,7 +38,7 @@ services:
       # Global redirect to HTTPS
       - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.http-catchall.entrypoints=http
-      - traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker
+      - traefik.http.routers.http-catchall.middlewares=redirect-to-https
       - traefik.http.routers.http-catchall.priority=1
 
       # Middlewares

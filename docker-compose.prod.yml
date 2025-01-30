@@ -97,16 +97,18 @@ services:
     container_name: icon-api
     image: ghcr.io/ap1969/icon-api:3.1.0-andy.03
     restart: always
+    volumes:
+      - ./data/iconify-api:/data/iconify-api
     networks:
       - web
     env_file:
       - .env
     environment:
       - API_TOKEN=${ICON_API_TOKEN}
-      - API_PORT=${ICON_SERVER_PORT}
+      - SERVER_PORT=${ICON_SERVER_PORT}
     labels:
       - traefik.enable=true
       - traefik.http.routers.icon-api.entrypoints=https
       - traefik.http.routers.icon-api.rule=Host(`icon-api.embedbuilder.com`)
       - traefik.http.routers.icon-api.tls=true
-      - traefik.http.services.icon-api.loadbalancer.server.port=${ICON_API_PORT}
+      - traefik.http.services.icon-api.loadbalancer.server.port=3030

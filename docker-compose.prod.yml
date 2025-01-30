@@ -95,10 +95,10 @@ services:
 
   icon-api:
     container_name: icon-api
-    image: ghcr.io/ap1969/icon-api:3.1.0-andy.03
+    image: ghcr.io/ap1969/icon-api:3.1.0-andy.04
     restart: always
     volumes:
-      - ./data/iconify-api:/data/iconify-api
+      - ./data-config/iconify-api:/data/iconify-api
     networks:
       - web
     env_file:

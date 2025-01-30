@@ -90,7 +90,7 @@ services:
 
   icon-api:
     container_name: icon-api
-    image: ghcr.io/ap1969/icon-api:latest
+    image: ghcr.io/ap1969/icon-api:3.1.0-andy.01
     restart: always
     networks:
       - web

@@ -95,7 +95,7 @@ services:
 
   icon-api:
     container_name: icon-api
-    image: ghcr.io/ap1969/icon-api:3.1.0-andy.02
+    image: ghcr.io/ap1969/icon-api:3.1.0-andy.03
     restart: always
     networks:
       - web

@@ -99,7 +99,7 @@ services:
     networks:
       - web
     environment:
-      - AUTH_TOKEN=${JSON_STORAGE_AUTH_TOKEN}
+      - API_TOKEN=${JSON_STORAGE_AUTH_TOKEN}
     labels:
       - traefik.enable=true
       - traefik.http.routers.json-storage.entrypoints=https

@@ -106,6 +106,7 @@ services:
     environment:
       - API_TOKEN=${ICON_API_TOKEN}
       - SERVER_PORT=${ICON_SERVER_PORT}
+      - VERSION=${ICON_API_VERSION}
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3030/version"]
       interval: 10s

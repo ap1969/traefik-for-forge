@@ -1,3 +1,8 @@
+# Ports
+# 3000 - html-to-tailwind
+# 3020 - uppy-companion
+# 3030 - icon-api 
+
 networks:
   web:
     external: true

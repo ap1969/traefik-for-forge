@@ -96,9 +96,10 @@ services:
       - web
     environment:
       - API_TOKEN=${ICON_API_TOKEN}
+      - API_PORT=3030
     labels:
       - traefik.enable=true
       - traefik.http.routers.icon-api.entrypoints=https
       - traefik.http.routers.icon-api.rule=Host(`icon-api.embedbuilder.com`)
       - traefik.http.routers.icon-api.tls=true
-      - traefik.http.services.icon-api.loadbalancer.server.port=3000
+      - traefik.http.services.icon-api.loadbalancer.server.port=3030

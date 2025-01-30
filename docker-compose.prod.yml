@@ -99,12 +99,14 @@ services:
     restart: always
     networks:
       - web
+    env_file:
+      - .env
     environment:
       - API_TOKEN=${ICON_API_TOKEN}
-      - API_PORT=3030
+      - API_PORT=${ICON_SERVER_PORT}
     labels:
       - traefik.enable=true
       - traefik.http.routers.icon-api.entrypoints=https
       - traefik.http.routers.icon-api.rule=Host(`icon-api.embedbuilder.com`)
       - traefik.http.routers.icon-api.tls=true
-      - traefik.http.services.icon-api.loadbalancer.server.port=3030
+      - traefik.http.services.icon-api.loadbalancer.server.port=${ICON_API_PORT}

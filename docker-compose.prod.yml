@@ -91,3 +91,18 @@ services:
       - traefik.http.routers.uppy-companion.rule=Host(`comp.embedbuilder.com`)
       - traefik.http.routers.uppy-companion.tls=true
       - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
+
+  json-storage:
+    container_name: json-storage
+    image: ghcr.io/ap1969/json-storage:latest
+    restart: always
+    networks:
+      - web
+    environment:
+      - AUTH_TOKEN=${JSON_STORAGE_AUTH_TOKEN}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.json-storage.entrypoints=https
+      - traefik.http.routers.json-storage.rule=Host(`storage.embedbuilder.com`)
+      - traefik.http.routers.json-storage.tls=true
+      - traefik.http.services.json-storage.loadbalancer.server.port=3000

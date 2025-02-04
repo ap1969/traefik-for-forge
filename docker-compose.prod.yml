@@ -35,7 +35,7 @@ services:
       - traefik.enable=true
       # Dashboard configuration
       - traefik.http.routers.dashboard.entrypoints=https
-      - traefik.http.routers.dashboard.rule=Host(`rp.embedbuilder.com`)
+      - traefik.http.routers.dashboard.rule=Host(`rp.redboxapps.com`)
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.tls=true
 
@@ -88,7 +88,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.uppy-companion.entrypoints=https
-      - traefik.http.routers.uppy-companion.rule=Host(`comp.embedbuilder.com`)
+      - traefik.http.routers.uppy-companion.rule=Host(`comp.redboxapps.com`)
       - traefik.http.routers.uppy-companion.tls=true
       - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
 

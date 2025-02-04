@@ -49,6 +49,10 @@ services:
       - traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker
       - traefik.http.routers.http-catchall.priority=1
 
+      # Handle cloudflare 
+      - traefik.http.middlewares.cloudflare.headers.customrequestheaders.X-Forwarded-Proto=https
+      - traefik.http.routers.json-storage.middlewares=cloudflare@docker
+
       # Redirect middleware
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 

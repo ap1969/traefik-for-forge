@@ -63,7 +63,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.html-to-tailwind.entrypoints=https
-      - traefik.http.routers.html-to-tailwind.rule=Host(`tw.embedbuilder.com`)
+      - traefik.http.routers.html-to-tailwind.rule=Host(`tw.redboxapps.com`)
       - traefik.http.routers.html-to-tailwind.tls=true
       - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000
 
@@ -103,6 +103,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.json-storage.entrypoints=https
-      - traefik.http.routers.json-storage.rule=Host(`storage.embedbuilder.com`)
+      - traefik.http.routers.json-storage.rule=Host(`storage.redboxapps.com`)
       - traefik.http.routers.json-storage.tls=true
       - traefik.http.services.json-storage.loadbalancer.server.port=3000

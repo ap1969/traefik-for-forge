@@ -1,8 +1,8 @@
 # Ports
 # 3000 - html-to-tailwind
-# 3020 - uppy-companion
+# 3020 - uppy-companion (not used)
 # 3030 - icon-api
-
+# 3040 - json-storage
 networks:
   web:
     external: true
@@ -35,13 +35,13 @@ services:
       - traefik.enable=true
       # Dashboard configuration
       - traefik.http.routers.dashboard.entrypoints=https
-      - traefik.http.routers.dashboard.rule=Host(`rp.redboxapps.com`)
+      - traefik.http.routers.dashboard.rule=Host(`rp.redboxapps.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.middlewares=auth-middleware@docker
 
       # Auth middleware
       - traefik.http.middlewares.auth-middleware.basicauth.usersfile=/auth/traefik.auth
-      - traefik.http.routers.dashboard.middlewares=auth-middleware@docker
 
       # Global redirect to HTTPS
       - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
@@ -50,8 +50,8 @@ services:
       - traefik.http.routers.http-catchall.priority=1
 
       # Handle cloudflare 
-      - traefik.http.middlewares.cloudflare.headers.customrequestheaders.X-Forwarded-Proto=https
-      - traefik.http.routers.json-storage.middlewares=cloudflare@docker
+      # - traefik.http.middlewares.cloudflare.headers.customrequestheaders.X-Forwarded-Proto=https
+      # - traefik.http.routers.json-storage.middlewares=cloudflare@docker
 
       # Redirect middleware
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
@@ -71,39 +71,16 @@ services:
       - traefik.http.routers.html-to-tailwind.tls=true
       - traefik.http.services.html-to-tailwind.loadbalancer.server.port=3000
 
-  uppy-companion:
-    container_name: uppy-companion
-    image: transloadit/companion
-    restart: always
-    networks:
-      - web
-    environment:
-      - COMPANION_DATADIR=/mnt/companion-data
-      - COMPANION_DOMAIN=comp.embedbuilder.com
-      - COMPANION_PROTOCOL=https
-      - COMPANION_CLIENT_ORIGINS=https://onlineadmin.dev,https://embedbuilder.com
-      - COMPANION_SECRET=${COMPANION_SECRET}
-      - COMPANION_DROPBOX_KEY=${COMPANION_DROPBOX_KEY}
-      - COMPANION_DROPBOX_SECRET=${COMPANION_DROPBOX_SECRET}
-      - COMPANION_GOOGLE_KEY=${COMPANION_GOOGLE_KEY}
-      - COMPANION_GOOGLE_SECRET=${COMPANION_GOOGLE_SECRET}
-    volumes:
-      - ${COMPANION_DATA_DIR:-./companion-data}:/mnt/companion-data
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.uppy-companion.entrypoints=https
-      - traefik.http.routers.uppy-companion.rule=Host(`comp.redboxapps.com`)
-      - traefik.http.routers.uppy-companion.tls=true
-      - traefik.http.services.uppy-companion.loadbalancer.server.port=3020
-
   json-storage:
     container_name: json-storage
-    image: ghcr.io/ap1969/json-storage:latest
+    image: ghcr.io/ap1969/json-storage:1.0.1
     restart: always
     networks:
       - web
     environment:
       - API_TOKEN=${JSON_STORAGE_AUTH_TOKEN}
+    volumes:
+      - /data/storage:/usr/src/app/data
     labels:
       - traefik.enable=true
       - traefik.http.routers.json-storage.entrypoints=https

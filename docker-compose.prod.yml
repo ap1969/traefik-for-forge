@@ -90,10 +90,12 @@ services:
 
   screenshot-service:
     container_name: screenshot-service
-    image: ghcr.io/ap1969/screenshot-service:1.1.4
+    image: ghcr.io/ap1969/screenshot-service:1.1.6
     restart: always
     networks:
       - web
+    environment:
+      - API_TOKEN=${SCREENSHOT_AUTH_TOKEN}
     labels:
       - traefik.enable=true
       - traefik.http.routers.screenshot-service.entrypoints=https

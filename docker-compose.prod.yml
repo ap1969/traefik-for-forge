@@ -95,7 +95,7 @@ services:
     networks:
       - web
     environment:
-      - AUTH_TOKEN=${SCREENSHOT_AUTH_TOKEN}
+      - API_TOKEN=${SCREENSHOT_AUTH_TOKEN}
     labels:
       - traefik.enable=true
       - traefik.http.routers.screenshot-service.entrypoints=https

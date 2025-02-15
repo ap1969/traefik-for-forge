@@ -87,3 +87,16 @@ services:
       - traefik.http.routers.json-storage.rule=Host(`storage.redboxapps.com`)
       - traefik.http.routers.json-storage.tls=true
       - traefik.http.services.json-storage.loadbalancer.server.port=3000
+
+  screenshot-service:
+    container_name: screenshot-service
+    image: ghcr.io/ap1969/screenshot-service:1.1.4
+    restart: always
+    networks:
+      - web
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.screenshot-service.entrypoints=https
+      - traefik.http.routers.screenshot-service.rule=Host(`ss.redboxapps.com`)
+      - traefik.http.routers.screenshot-service.tls=true
+      - traefik.http.services.screenshot-service.loadbalancer.server.port=3000

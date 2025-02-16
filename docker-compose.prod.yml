@@ -25,6 +25,8 @@ services:
     command:
       - --log.level=DEBUG
       - --api.dashboard=true
+      - --entrypoints.http.http.redirections.entrypoint.to=https
+      - --entrypoints.http.http.redirections.entrypoint.scheme=https
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
       - --providers.docker=true
@@ -111,9 +113,8 @@ services:
       - N8N_DISABLE_PRODUCTION_MAIN_PROCESS=false
     labels:
       - traefik.enable=true
-      - traefik.http.routers.n8n.entrypoints=https
+      - traefik.http.routers.n8n.entrypoints=http,https
       - traefik.http.routers.n8n.rule=Host(`automation.redboxapps.com`)
-      - traefik.http.routers.n8n.tls=true
       - traefik.http.routers.n8n.tls.certresolver=letsencrypt
       - traefik.http.services.n8n.loadbalancer.server.port=5678
 

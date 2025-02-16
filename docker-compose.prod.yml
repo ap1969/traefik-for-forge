@@ -87,3 +87,29 @@ services:
       - traefik.http.routers.json-storage.rule=Host(`storage.redboxapps.com`)
       - traefik.http.routers.json-storage.tls=true
       - traefik.http.services.json-storage.loadbalancer.server.port=3000
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    restart: always
+    networks:
+      - web
+    volumes:
+      - /data/n8n:/home/node/.n8n
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+      - N8N_USER_MANAGEMENT_DISABLED=true
+      - NODE_ENV=production
+      - N8N_DISABLE_PRODUCTION_MAIN_PROCESS=false
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.n8n.entrypoints=https
+      - traefik.http.routers.n8n.rule=Host(`automation.redboxapps.com`)
+      - traefik.http.routers.n8n.tls=true
+      - traefik.http.services.n8n.loadbalancer.server.port=5678
+
+volumes:
+  n8n_data:
+    name: n8n_data
